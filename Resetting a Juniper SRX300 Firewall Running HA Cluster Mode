@@ -1,0 +1,35 @@
+# When you see "Hit [Enter] to boot immediately, or space bar for a command prompt." Press space bar then issue the command below
+printenv
+
+# Do you see "boot_unattended=0"? If not, you will not get a loader> prompt. Set the boot_unattended value to 0 then boot the device
+setenv boot_unattended
+boot
+
+# When you see "Hit [Enter] to boot immediately, or space bar for a command prompt." Press space bar. Then boot into single user mode as follows:
+boot -s
+
+# How to remove the password on the device
+request system zeroize
+request system reboot
+
+# How to verify that cluster mode is enabled
+cli
+configure
+run show chassis cluster status
+exit
+
+# Disable cluster mode by setting the cluster ID to 0 on node 0 then rebooting (do this on all nodes)
+set chassis cluster cluster-id 0 node 0 reboot
+
+# Verify that cluster mode is now disabled
+cli
+configure
+run show chassis cluster status
+
+# Resetting the system to factory default settings then configuring a root PW so you can save (commit) the config
+load factory-default
+set system root-authentication plain-text-password
+commit
+exit
+
+request system reboot
