@@ -1,0 +1,12 @@
+username admin
+password N9KC93180YCFXr16!
+
+copy usb1:nxos64-cs.10.2.3.F.bin bootflash:
+
+conf t
+boot nxos bootflash:/nxos64-cs.10.2.3.F.bin
+end
+
+copy run start
+
+relo
