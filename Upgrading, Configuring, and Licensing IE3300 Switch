@@ -1,0 +1,96 @@
+en
+conf t
+int vlan1
+no ip add
+exit
+
+vtp domain CustomerName
+vtp mode transparent
+
+default int g1/3
+int g1/3
+switchport access vlan 99
+exit
+
+int vlan99
+ip add dhcp
+no shut
+end
+
+copy tftp flash
+172.31.87.1
+ie3x00-universalk9.17.12.04.SPA.bin
+
+wr
+inst add file flash:ie3x00-universalk9.17.12.04.SPA.bin act com pr none
+
+en
+inst rem inac
+
+conf t
+lic smart res
+exit
+wr
+
+lic smart res req all
+
+sh lic udi
+copy tftp flash
+172.31.87.1
+AuthorizationCode_SN_XXXXXXXX.txt
+
+sh run | i vtp
+copy tftp startup-config
+172.31.87.1
+sw1.txt
+
+! Remove g1/3 Connection to Prevent Port from Becoming Err-disabled Upon Reboot
+
+relo
+
+
+conf t
+! ip domain name CustomerName.local
+crypto key generate rsa general-keys modulus 2048
+end
+wr
+
+conf t
+lic smart res
+exit
+wr
+
+clock set hh:mm:ss Month Day Year
+
+sh lic udi
+lic smart res install file flash:AuthorizationCode_SN_XXXXXXXX.txt
+
+conf t
+no lic smart res
+lic boot level network-essentials addon dna-essentials
+exit
+wr
+
+relo
+
+conf t
+lic smart res
+exit
+wr
+
+sh lic sum
+
+! Capture Output
+term len 0
+show inventory
+show ip int br Vlan199
+dir
+show ver
+sh vlan bri
+show boot
+show crypto key mypubkey rsa
+show run
+sh lic all
+sh lic sum
+term len 24
+wr
