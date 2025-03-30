@@ -1,0 +1,59 @@
+! Get the New IOS Image File onto the ISR 4331 Router
+en
+copy usb0:isr4300-universalk9.16.12.07.SPA.bin flash:
+
+! Set Up an Enable Password and Configure the Router to Point to the New IOS Image File Upon Reboot
+conf t
+enable password cisco
+boot system flash bootflash:isr4300-universalk9.16.12.07.SPA.bin
+exit
+
+! Save the Changes
+wr mem
+
+! Reload the Router
+relo
+
+! Delete the Old IOS Image File
+del flash:isr4300-universalk9.16.12.03.SPA.bin
+
+! Licensing the Router
+conf t
+lic smart res
+exit
+wr mem
+
+! Request a License Reservation Code then Paste it into the Cisco Smart Licensing Portal
+lic smart res req loc
+
+! Copy the New License File Acquired from the Cisco Portal to the Router then Install the Licenses
+sh lic udi
+lic smart res install file flash:AuthorizationCode_SN_XXXXXXXX.txt
+
+! Ensure that the Application, Security, and Boost Licenses are applied
+conf t
+license boot level appxk9
+license boot level securityk9
+platform hardware throughput level boost
+end
+
+wr mem
+
+relo
+
+
+! Capture Output
+term len 0
+show version
+show run
+dir
+show inv
+show env
+sh platform
+sh ip int br
+sh lic udi
+sh lic all
+show platform hardware throughput level
+sh lic summary
+term len 24
+wr
