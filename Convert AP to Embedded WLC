@@ -1,0 +1,26 @@
+! AP Config
+! Set Static IP on AP to Allow Connectivity to Jumphost for TFTP Image Transfer
+capwap ap ip 172.31.20.155 255.255.255.0 172.31.20.1
+
+! Convert CAPWAP AP to Embedded WLC and Transfer New IOS Image from Jumphost to AP
+ap-type ewc-ap tftp://172.31.20.11/ap1g7 tftp://172.31.20.11/C9800-AP-iosxe-wlc.bin
+
+
+! Switch Config
+! Temporarily Set Interface on Which AP is Connected to Trunk Type
+conf t
+int tw1/0/5
+desc Connection to AP
+no switchport access vlan 1025
+switchport mode trunk
+switchport trunk native vlan 1025
+end
+
+! Set Trunk Interface Back to Original Configuration
+conf t
+int tw1/0/5
+desc Connection to MGMT Network
+switchport mode access
+switchport access vlan 1025
+span portfast
+end
