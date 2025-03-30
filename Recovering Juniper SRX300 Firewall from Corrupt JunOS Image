@@ -1,0 +1,2 @@
+# If this doesn't work initially, reboot the device w/ the USB inserted and try again
+loader> install file://junos-srxsme-22.4R2.8.tgz
