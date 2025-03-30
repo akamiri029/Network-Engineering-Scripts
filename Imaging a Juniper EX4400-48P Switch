@@ -1,0 +1,20 @@
+! JunOS Upgrade
+login:root
+mkdir /tmp /usb
+mount -t msdosfs /dev/da0s1 /tmp/usb
+cd /tmp/usb
+
+cli
+request system software add /tmp/usb/junos-install-ex-x86-64-22.2R3-S2.8.tgz no-validate no-copy
+request system reboot
+
+! Disable ZTP
+login:root
+cli
+configure
+set system root-authentication plain-text-password Juniper123
+delete chassis auto-image-upgrade
+commit
+exit
+
+request system reboot
