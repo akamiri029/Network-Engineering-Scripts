@@ -1,0 +1,48 @@
+en
+conf t
+int vlan1
+no ip add
+exit
+
+vtp domain CustomerName
+vtp mode transparent
+
+default int g1/2
+int g1/2
+switchport access vlan 99
+exit
+
+int vlan99
+ip add dhcp
+no shut
+end
+
+archive download-sw /overwrite /force-reload tftp://172.31.87.1/ie2000-universalk9-tar.152-4.EA5.tar
+
+en
+sh ver | i Ver
+sh run | i vtp
+copy tftp startup-config
+172.31.87.1
+sw1.txt
+
+relo
+
+conf t
+! ip domain name CustomerName.local
+crypto key generate rsa general-keys modulus 2048
+end
+wr
+
+! Capture Output
+term len 0
+show inventory
+show ip int br Vlan201
+dir
+show ver
+sh vlan bri
+show boot
+show crypto key mypubkey rsa
+show run
+term len 24
+wr
