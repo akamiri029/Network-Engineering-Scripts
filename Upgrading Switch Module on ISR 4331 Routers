@@ -1,0 +1,46 @@
+! Configure Router as TFTP Server
+en
+conf t
+int gi0/0/0
+ip address 192.168.0.1 255.255.255.252
+no shut
+exit
+
+tftp-server usb0:c3560e-universalk9-mz.152-4.E5.bin
+exit
+
+! Switch From Router Mode to Switch Mode
+hw-module session 1/0
+
+! Configure Switch Module as TFTP Client
+en
+conf t
+int gi0/1
+no shut
+int vlan1
+ip address 192.168.0.2 255.255.255.252
+no shut
+end
+
+! Erase Existing IOS Image from Switch Flash Memory to Free Up Space
+format flash:
+
+! Copy New IOS Image File from Router to Switch
+copy tftp://192.168.0.1/c3560e-universalk9-mz.152-4.E5.bin flash:
+
+! Verify Contents of Flash Memory
+dir flash:
+
+! Erase Switch Config to Return Config Back to Default
+wr erase
+
+! Reload the Switch and Wait for it to Come Back Up
+reload
+
+! Type 'No' to omit saving the changes
+! After the switch reload is complete and the new version is verified, Press Ctrl + A then Ctrl + Q to exit Switch Mode
+
+! Reload Router
+reload
+
+! Type 'No' to omit saving the changes on the router
