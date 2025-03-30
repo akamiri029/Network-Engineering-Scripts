@@ -1,0 +1,78 @@
+en
+conf t
+ip tftp source g0/0
+exit
+
+conf t
+int g0/0
+ip add dhcp
+no shut
+end
+
+copy tftp flash
+172.31.44.11
+cat9k_iosxe.17.12.04.SPA.bin
+
+wr
+install add file flash:cat9k_iosxe.17.12.04.SPA.bin activate commit prompt-level none
+
+en
+inst rem inac
+
+en
+conf t
+lic smart res
+exit
+wr
+
+lic smart res req all
+
+en
+sh lic udi
+copy tftp flash
+172.31.44.11
+AuthorizationCode_SN_XXXXXXXX.txt
+
+en
+conf t
+vtp domain CustomerName
+vtp mode transparent
+exit
+
+copy tftp startup-config
+172.31.44.11
+sw1.txt
+
+relo
+
+conf t
+! ip domain name CustomerName.local
+crypto key generate rsa general-keys modulus 2048
+lic smart res
+end
+
+sh lic udi
+license smart reservation install file flash:AuthorizationCode_SN_XXXXXXXX.txt
+
+conf t
+license boot level network-essentials addon dna-essentials
+exit
+wr
+
+! Capture Output
+term len 0
+show inventory
+show ip interface brief Vlan199
+dir
+show version
+sh switch
+sh vlan bri
+show boot
+show crypto key mypubkey rsa
+sh lic sum
+sh lic all
+show platform
+show logg
+show run
+term len 24
+wr
