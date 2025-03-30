@@ -1,0 +1,8 @@
+cli
+conf
+load factory-default
+set sytem root-authentication plain-text-password Juniper123
+commit
+exit
+
+req sys reb
