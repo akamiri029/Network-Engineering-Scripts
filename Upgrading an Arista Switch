@@ -1,0 +1,14 @@
+! login as: admin
+
+zerotouch cancel
+
+enable
+write memory
+
+copy usb1:/EOS-4.23.3M.swi flash:/EOS-4.23.3M.swi
+
+configure terminal
+username admin secret arista
+boot system flash:/EOS-4.23.3M.swi
+do write memory
+do reload now
