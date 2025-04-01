@@ -1,0 +1,21 @@
+# Verify the current version
+get sys stat
+
+# Upgrading via USB
+exec res image usb NEW_IMAGE.out
+
+# Upgrading via TFTP
+exec res image tftp NEW_IMAGE.out 172.31.20.11
+
+# Loading Configuration File onto Fortinet via USB
+exec res config usb NEW_CONFIG.conf
+
+# Loading Configuration File onto Fortinet via TFTP
+exec res config tftp NEW_CONFIG.conf 172.31.20.11
+
+# Config Verification Commands
+get sys stat
+get sys ha status
+diag debug config-error-log read
+sh sys int
+get sys int transceiver
